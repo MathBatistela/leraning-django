@@ -5,8 +5,6 @@ from django.urls import reverse
 
 # Create your views here.
 
-tasks = []
-
 class NewTaskForm(forms.Form):
     task = forms.CharField(label="New Task")
 
