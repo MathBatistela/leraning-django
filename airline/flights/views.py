@@ -2,13 +2,27 @@ from django.shortcuts import render
 from flights.models import Flight, Passenger
 from django.http import HttpResponseRedirect, HttpResponseBadRequest, Http404
 from django.urls import reverse
-# Create your views here.
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from flights.serializers import FlightModelSerializer
 
-
+@api_view(['GET'])
 def index(request):
-    return render(request, "flights/index.html", {
-        "flights": Flight.objects.all()
-    })
+    # renderer_classes = (TemplateHTMLRenderer,JSONRenderer)
+    flightsobjcts = Flight.objects.all()
+
+    print("-------------------------------------------------------")
+    print(request.accepted_renderer.format)
+    if request.accepted_renderer.format == 'json':
+        serializer = FlightModelSerializer(flightsobjcts, many=True)
+        data = serializer.data
+        return Response(data)
+
+
+    data = {'flights': flightsobjcts}
+    return Response(data, template_name='flights/index.html')
     
     
 def flight(request, flight_id):
